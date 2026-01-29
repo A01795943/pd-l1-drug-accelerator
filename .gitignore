@@ -189,3 +189,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+#carpeta script
+script/env_config.sh
+
+
+
