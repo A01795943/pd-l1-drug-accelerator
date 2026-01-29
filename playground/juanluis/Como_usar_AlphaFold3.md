@@ -101,6 +101,95 @@ Solo secuencias con pLDDT y pTM altos avanzan.
 
 ---
 
+### 5.3 Secuencia FASTA de PD-L1
+
+```
+>sp|Q9NZQ7|PD1L1_HUMAN Programmed cell death 1 ligand 1 OS=Homo sapiens OX=9606 GN=CD274 PE=1 SV=1
+MDSKGNKLLSVLLLWVLLLWASPMAEVQPTLTVPLTVLHDGKGQGSVVLHNHAPIQSGVTFHEGIIPS
+SFHGELKRVTLGPLPSLFITLDKDLQGAGAFGPGGATYEKVTLYFQSQLVGGSEVGLEYRKHCFMEG
+PIHGPSNVVLTSLTIPYSASHLGGGTHVKNQVQTAVSFTIPCVRHCGTSSCVNGGGGTVTIKTVECT
+AQGPNHSVITLKVLGTYGPVVQDRVVWQGLYNYGEKDIQHPSMDFGAYSLTHKLPQVRDSRGYRFIP
+VQSEENRLIVHSVNPQLWYSLKKLTPIQGLDNLPSDFQEHREGDTRHYEELSVFPDGGGIYTIKPCL
+FPRGGLWDVCAKPLASESWLGNVDSGLKEQTLSVGDSKTQSLSAATRVQWGDVVIGEVTVTVSPSSS
+SSESQKSLSEKLETQTWSSYRGDPSSVCTGPGEGKTATNNDYLVGTTLGMSSSSSSLPLPSRHSRAPS
+PSRPGSLEAATA
+
+```
+### 5.4 Notas sobre la secuencia FASTA de PD-L1 (CD274)
+
+#### Información general
+
+Esta secuencia corresponde a la **forma completa de PD-L1 humana**, codificada por el gen **CD274** y anotada en UniProt con el identificador **Q9NZQ7**.  
+PD-L1 (*Programmed cell death 1 ligand 1*) es una proteína clave en la regulación de la respuesta inmune y un objetivo central en inmunoterapia contra el cáncer.
+
+🔗 **Referencia UniProt:**  
+https://www.uniprot.org/uniprotkb/Q9NZQ7/entry
+
+---
+
+#### Tipo de proteína
+
+PD-L1 es una **proteína transmembrana tipo I**, lo que implica que:
+
+- Posee un **dominio extracelular N-terminal**
+- Contiene **una sola hélice transmembrana**
+- Presenta una **cola citosólica C-terminal corta**
+
+El dominio extracelular es el responsable directo de la **interacción con el receptor PD-1** en las células T.
+
+🔗 **Información general sobre PD-L1:**  
+https://en.wikipedia.org/wiki/PD-L1
+
+---
+
+#### Componentes estructurales de la secuencia
+
+La secuencia FASTA completa incluye las siguientes regiones funcionales:
+
+##### 1. Péptido señal (Signal peptide)
+Ubicado al inicio de la secuencia, permite la correcta inserción y direccionamiento de la proteína hacia la vía secretora y la membrana celular.
+
+### 2. Dominio extracelular
+Región responsable de la interacción con **PD-1**.  
+Este dominio es el principal objetivo en estudios de:
+- diseño de agonistas o antagonistas,
+- docking proteína–proteína,
+- diseño de péptidos o mini-proteínas terapéuticas.
+
+##### 3. Región transmembrana y cola citosólica
+La secuencia incluye la región transmembrana, pero **termina antes de una cola citosólica larga**, lo cual es común en anotaciones enfocadas al dominio funcional principal.
+
+---
+
+#### Longitud de la secuencia
+
+- **Longitud total:** 290 aminoácidos  
+- **Especie:** *Homo sapiens*
+
+Esta longitud corresponde a la isoforma canónica reportada en UniProt.
+
+---
+
+#### Uso en modelado estructural
+
+Para estudios computacionales (por ejemplo, AlphaFold, docking o diseño de proteínas):
+
+- Es común utilizar **solo el dominio extracelular**, excluyendo:
+  - el péptido señal
+  - la región transmembrana
+- Esto facilita el modelado y evita artefactos estructurales relacionados con la membrana.
+
+---
+
+#### Referencias
+
+- UniProt Consortium. *CD274 – Programmed cell death 1 ligand 1*.  
+  https://www.uniprot.org/uniprotkb/Q9NZQ7/entry
+
+- Wikipedia contributors. *PD-L1*.  
+  https://en.wikipedia.org/wiki/PD-L1
+---
+
 ## 6. Péptidos vs proteínas
 
 ### Péptido
