@@ -230,3 +230,6 @@ data/processed_pdbs/*.temp
 
 # --- Logs ---
 *.log
+
+# --- Sensible --
+run_nvidia_api.py
