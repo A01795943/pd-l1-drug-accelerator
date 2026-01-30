@@ -1,70 +1,91 @@
 import os
-import csv
 import pandas as pd
+import json
 from datetime import datetime
 
 # =============================================================================
-# 🚀 ORQUESTADOR ALPHA FOLD - PASO 3
+# 🚀 ORQUESTADOR ALPHA FOLD 3 JSON (FORMATO OFICIAL) - PASO 3
 # =============================================================================
 
-# 1. Detección automática de la raíz del proyecto
+# 1. Configuración de Rutas
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
-
-# 2. Rutas de archivos (Sincronizadas con tu nuevo orden visual)
 HISTORY_FILE = os.path.join(PROJECT_ROOT, "data", "processed_history.csv")
 AF_INPUT_DIR = os.path.join(PROJECT_ROOT, "outputs", "03_alphafold_inputs")
 
-# =============================================================================
-
-def prepare_sequences_for_validation():
-    """
-    Lee el historial y genera archivos FASTA solo para las secuencias 
-    que ProteinMPNN acaba de crear.
-    """
+def prepare_validation_package():
     if not os.path.exists(HISTORY_FILE):
-        print("⚠️ No se encontró el archivo de historial. ¿Corriste el paso 02?")
+        print(f"❌ ERROR: No se encontró el historial en {HISTORY_FILE}")
         return
 
-    # Crear carpeta de salida si no existe
     os.makedirs(AF_INPUT_DIR, exist_ok=True)
-    
-    # Cargar historial
     df = pd.read_csv(HISTORY_FILE)
     
-    # Si no existe la columna de estado, la creamos
     if 'status' not in df.columns:
         df['status'] = 'waiting_validation'
 
-    # Filtramos solo las que necesitan validación
+    # Filtramos las que necesitan validación
     to_process = df[df['status'] == 'waiting_validation']
 
     if to_process.empty:
-        print("✅ Todas las secuencias ya tienen sus archivos FASTA listos.")
+        print("✅ No hay secuencias nuevas para procesar.")
         return
 
-    print(f"🧬 Procesando {len(to_process)} nuevas secuencias para AlphaFold...")
+    print(f"🧬 Generando JSON oficial para {len(to_process)} diseños...")
+
+    all_jobs_json = []
 
     for idx, row in to_process.iterrows():
-        sequence = row['sequence']
-        batch = row['batch']
+        raw_seq = row['sequence']
         
-        # Nombre del archivo basado en el batch y el índice
-        file_name = f"target_{batch}_{idx}.fasta"
-        file_path = os.path.join(AF_INPUT_DIR, file_name)
-        
-        # Escribir el formato FASTA
-        with open(file_path, "w") as f:
-            f.write(f">design_{idx}_batch_{batch}\n{sequence}\n")
-            
-        # Actualizar el estado en el DataFrame
-        df.at[idx, 'status'] = 'fasta_ready'
+        # Separación Binder/Target
+        if '/' in raw_seq:
+            binder_seq, target_seq = raw_seq.split('/')
+        else:
+            binder_seq = raw_seq
+            target_seq = None
 
-    # Guardar los cambios en el historial
+        job_id = f"design_{idx}_{row['batch']}"
+        
+        # --- ESTRUCTURA EXACTA REQUERIDA POR ALPHAFOLD 3 SERVER ---
+        # Nota: Google usa camelCase (modelContents) y objetos anidados específicos
+        model_entities = [
+            {
+                "protein": {
+                    "sequence": binder_seq,
+                    "label": "Binder_Designed"
+                }
+            }
+        ]
+        
+        if target_seq:
+            model_entities.append({
+                "protein": {
+                    "sequence": target_seq,
+                    "label": "Target_Protein"
+                }
+            })
+
+        job_structure = {
+            "name": job_id,
+            "modelContents": model_entities  # <--- Crucial: camelCase
+        }
+        
+        all_jobs_json.append(job_structure)
+        df.at[idx, 'status'] = 'ready_for_google'
+
+    # Guardar el JSON
+    json_output_path = os.path.join(AF_INPUT_DIR, "upload_to_google.json")
+    with open(json_output_path, "w") as jf:
+        json.dump(all_jobs_json, jf, indent=4)
+
     df.to_csv(HISTORY_FILE, index=False)
     
-    print(f"📂 ¡Listos! Los archivos están en: {AF_INPUT_DIR}")
-    print("💡 Ahora puedes subir estos archivos a ColabFold o correr tu versión local.")
+    print("-" * 60)
+    print(f"✅ ¡JSON CORREGIDO GENERADO!")
+    print(f"📂 Archivo: {json_output_path}")
+    print(f"🚀 Súbelo ahora a https://alphafoldserver.com/")
+    print("-" * 60)
 
 if __name__ == "__main__":
-    prepare_sequences_for_validation()
+    prepare_validation_package()
