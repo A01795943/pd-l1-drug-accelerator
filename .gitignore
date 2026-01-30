@@ -232,4 +232,5 @@ data/processed_pdbs/*.temp
 *.log
 
 # --- Sensible --
-run_nvidia_api.py
+# entorno sensible de la llave apikey de RFdiffusion 
+api.env 
