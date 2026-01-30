@@ -190,23 +190,43 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# --- IGNORAR DATOS PESADOS (Local Only) ---
-data/raw/*
-data/processed_pdbs/*
-data/MASTER_DB_METADATA.csv
-
-# Ignorar salidas de generación masiva
-outputs/01_rfdiffusion/*
-outputs/02_proteinmpnn/*
-outputs/03_alphafold_inputs/*
-outputs/execution_log.txt
-
-# --- EXCEPCIONES (Permitir documentación) ---
-!outputs/README.md
-!data/README.md
-
-# --- CONFIGURACIÓN Y SISTEMA ---
-scripts/env_config.sh
+# --- Python & Sistema ---
 __pycache__/
-.ipynb_checkpoints/
-*.DS_Store
+*.py[cod]
+*$py.class
+.DS_Store
+.vscode/
+.idea/
+
+# --- Entornos Virtuales ---
+env/
+venv/
+SE3nv/
+miniconda3/
+
+# --- Archivos Grandes y Modelos (NO subir a GitHub) ---
+models/
+*.pt
+*.pth
+*.ckpt
+
+# --- Salidas Masivas (Outputs) ---
+# Ignoramos todas las salidas por defecto para no llenar el repo
+outputs/*
+
+# --- Excepciones (¡Lo que SÍ queremos guardar!) ---
+# Queremos guardar la carpeta donde se guardan los resultados finales elegidos
+!outputs/final_sequences/
+!outputs/nvidia_results/
+!outputs/README.md
+
+# --- Datos ---
+# Ignorar PDBs crudos descargados (se pueden volver a bajar)
+data/processed_pdbs/*_raw.pdb
+data/processed_pdbs/*.temp
+
+# Mantener los PDBs "Ready" o de referencia si son pequeños
+!data/processed_pdbs/Target_Fixed_A1.pdb
+
+# --- Logs ---
+*.log
