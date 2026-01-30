@@ -24,7 +24,7 @@ POSIBLES_RUTAS_MPNN = [
 MPNN_DIR = next((ruta for ruta in POSIBLES_RUTAS_MPNN if os.path.exists(ruta)), None)
 
 # 3. Construcción de Rutas del Proyecto (Dinámicas)
-INPUT_PDB = os.path.join(PROJECT_ROOT, "outputs", "nvidia_results", "design_nvidia_final.pdb")
+INPUT_PDB = os.path.join(PROJECT_ROOT, "outputs", "01_rfdiffusion_results", "design_nvidia_final.pdb")
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 HISTORY_FILE = os.path.join(DATA_DIR, "processed_history.csv")
 
@@ -74,7 +74,10 @@ def run_mpnn():
         "--out_folder", OUTPUT_DIR,
         "--num_seq_per_target", "10",
         "--sampling_temp", "0.1",
-        "--device", "cuda:0"
+        # CAMBIA ESTO:
+        # "--device", "cuda:0" 
+        # POR ESTO (ProteinMPNN suele usar 1 para GPU o 0 para CPU, o simplemente detectarlo):
+        "--num_seq_per_target", "10", 
     ]
     
     try:

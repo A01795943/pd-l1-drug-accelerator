@@ -13,7 +13,7 @@ import time
 
 # Rutas
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-rfdiffusion_path = os.path.join(project_root, "outputs", "01_rfdiffusion")
+rfdiffusion_path = os.path.join(project_root, "outputs", "01_rfdiffusion_results")
 mpnn_path = os.path.join(project_root, "outputs", "02_proteinmpnn")
 db_path = os.path.join(project_root, "data", "MASTER_DB_METADATA.csv")
 

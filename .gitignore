@@ -190,47 +190,70 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# --- Python & Sistema ---
+# =============================================================================
+# 1. ARCHIVOS DE SISTEMA Y PYTHON (Basura técnica)
+# =============================================================================
 __pycache__/
 *.py[cod]
 *$py.class
 .DS_Store
 .vscode/
 .idea/
+*.log
 
-# --- Entornos Virtuales ---
+# =============================================================================
+# 2. ENTORNOS VIRTUALES (Nunca se suben)
+# =============================================================================
 env/
 venv/
 SE3nv/
 miniconda3/
 
-# --- Archivos Grandes y Modelos (NO subir a GitHub) ---
-models/
+# =============================================================================
+# 3. SECRETOS Y CONFIGURACIÓN (Seguridad)
+# =============================================================================
+.env
+api.env
+*.env
+
+# =============================================================================
+# 4. HERRAMIENTAS EXTERNAS (Ya están en su propio repo)
+# =============================================================================
+# Ignoramos la carpeta herramientas porque la manejas por separado
+herramientas/
+tools/
+
+# =============================================================================
+# 5. MODELOS Y PESOS (Archivos gigantes .pt)
+# =============================================================================
 *.pt
 *.pth
 *.ckpt
 
-# --- Salidas Masivas (Outputs) ---
-# Ignoramos todas las salidas por defecto para no llenar el repo
+# =============================================================================
+# 6. GESTIÓN DE OUTPUTS (El Pipeline)
+# =============================================================================
+# Por defecto ignoramos todos los resultados masivos
 outputs/*
 
-# --- Excepciones (¡Lo que SÍ queremos guardar!) ---
-# Queremos guardar la carpeta donde se guardan los resultados finales elegidos
-!outputs/final_sequences/
-!outputs/nvidia_results/
+# --- EXCEPCIONES (Lo que SÍ queremos en Git) ---
+# Queremos mantener la estructura de carpetas pero no los archivos pesados
+!outputs/01_rfdiffusion_results/
+!outputs/02_proteinmpnn/
+!outputs/03_alphafold_inputs/
 !outputs/README.md
 
-# --- Datos ---
-# Ignorar PDBs crudos descargados (se pueden volver a bajar)
-data/processed_pdbs/*_raw.pdb
+# Específicamente, NO ignores tu diseño base de NVIDIA porque es tu referencia
+!outputs/01_rfdiffusion_results/design_nvidia_final.pdb
+
+# =============================================================================
+# 7. DATOS Y BASES DE DATOS
+# =============================================================================
 data/processed_pdbs/*.temp
+data/processed_pdbs/*_raw.pdb
 
-# Mantener los PDBs "Ready" o de referencia si son pequeños
+# --- EXCEPCIONES ---
+# El historial es PEQUEÑO y VALIOSO, sí debe ir en Git para seguimiento
+!data/processed_history.csv
+!data/MASTER_DB_METADATA.csv
 !data/processed_pdbs/Target_Fixed_A1.pdb
-
-# --- Logs ---
-*.log
-
-# --- Sensible --
-# entorno sensible de la llave apikey de RFdiffusion 
-api.env 
