@@ -1,66 +1,55 @@
 #!/bin/bash
 # =============================================================================
-# SCRIPT 01: GENERACIÓN DE ESTRUCTURAS (RFdiffusion)
+# SCRIPT 01: RFdiffusion - CLEAN DATA MODE (V10)
 # =============================================================================
-# OBJETIVO:
-# Utiliza Inteligencia Artificial Generativa para crear "esqueletos" de proteínas
-# (Backbones) que encajen geométricamente en el sitio activo de PD-1.
-#
-# INPUT:  data/processed_pdbs/pd1_only.pdb (Tu estructura limpia)
-# OUTPUT: outputs/01_rfdiffusion/ (Archivos .pdb sin secuencia real)
+# Fix: SVD crash due to dirty PDB (ANISOU/HETATM).
+# Input: pd1_clean.pdb (Only Protein Atoms)
 # =============================================================================
 
-# --- 1. CONFIGURACIÓN DEL ENTORNO (Escalabilidad) ---
-# Detectamos dónde estamos para poder importar la configuración personal
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
-
-# Cargamos tus rutas personales (env_config.sh)
-# Si esto falla, es porque no creaste el archivo env_config.sh
 source "$SCRIPT_DIR/env_config.sh"
 
-# --- 2. DEFINICIÓN DE RUTAS DEL PROYECTO ---
-INPUT_PDB="$PROJECT_ROOT/data/processed_pdbs/pd1_only.pdb"
-OUTPUT_DIR="$PROJECT_ROOT/outputs/01_rfdiffusion/diseño_lote1"
+# --- 1. PROTECCIONES DE GPU ---
+export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:128
+export TORCH_ALLOW_TF32_CUBLAS_OVERRIDE=0
+export TORCH_CUDNN_ALLOW_TF32=0
+# Determinismo estricto para evitar errores matemáticos
+export CUBLAS_WORKSPACE_CONFIG=:4096:8
 
-# Creamos la carpeta de salida si no existe
+# --- 2. CONFIGURACIÓN ---
+BATCH_ID="batch_$(date +%Y%m%d_%H%M%S)"
+
+# CAMBIO IMPORTANTE: Usamos el archivo LIMPIO
+INPUT_PDB="$PROJECT_ROOT/data/processed_pdbs/pd1_clean.pdb"
+
+OUTPUT_DIR="$PROJECT_ROOT/outputs/01_rfdiffusion/$BATCH_ID"
+LOG_FILE="$PROJECT_ROOT/outputs/execution_log.txt"
+
 mkdir -p "$OUTPUT_DIR"
 
-# --- 3. ACTIVACIÓN DE CONDA ---
-# Intentamos activar conda usando las rutas estándar de instalación
-if [ -f "$HOME/miniforge3/etc/profile.d/conda.sh" ]; then
-    source "$HOME/miniforge3/etc/profile.d/conda.sh"
-elif [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
-    source "$HOME/miniconda3/etc/profile.d/conda.sh"
-fi
-
-# Activamos el entorno definido en tu env_config.sh (ej. SE3nv)
+# --- 3. ENTORNO ---
+source "$HOME/miniforge3/etc/profile.d/conda.sh" 2>/dev/null || source "$HOME/miniconda3/etc/profile.d/conda.sh"
 conda activate "$CONDA_ENV_NAME"
 
 echo "-----------------------------------------------------------"
-echo " 🚀 INICIANDO RFDIFFUSION"
-echo " Target: PD-1 (Cadena A)"
+echo " 🚀 INICIANDO BATCH: $BATCH_ID"
+echo " 🧹 Input: pd1_clean.pdb (Sin agua/iones)"
+echo " 🛡️  Modo: Safe Deterministic"
 echo "-----------------------------------------------------------"
 
-# Nos movemos a la carpeta de RFdiffusion para que encuentre sus modelos (.pt)
 cd "$RFDIFFUSION_DIR"
 
-# --- 4. EJECUCIÓN DE LA INFERENCIA ---
+# --- 4. EJECUCIÓN ---
 ./scripts/run_inference.py \
-    inference.output_prefix="$OUTPUT_DIR/diseño" \
-    inference.input_pdb="$INPUT_PDB" \
-    inference.num_designs=10 \
-    'contigmap.contigs=[A1-130]/0 60-80' \
+    inference.output_prefix="'$OUTPUT_DIR/design'" \
+    inference.input_pdb="'$INPUT_PDB'" \
+    inference.num_designs=40 \
+    inference.deterministic=True \
+    'contigmap.contigs=["A18-132/0 60-80"]' \
     'ppi.hotspot_res=[A75,A76,A85]' \
-    inference.ckpt_override_path="$RFDIFFUSION_DIR/models/Active_site_ckpt.pt"
+    inference.ckpt_override_path="'$RFDIFFUSION_DIR/models/Active_site_ckpt.pt'"
 
-# --- GLOSARIO DE BANDERAS (Para tu equipo) ---
-# * inference.num_designs=10: Generará 10 opciones diferentes.
-# * contigmap.contigs=[A1-130]/0 60-80: 
-#      - [A1-130]: Toma la Cadena A (PD-1) residuos 1 al 130 y DÉJALA FIJA.
-#      - /0: No dejes espacio (gap) entre cadenas.
-#      - 60-80: Crea una NUEVA cadena (Binder) de longitud variable entre 60 y 80 residuos.
-# * ppi.hotspot_res=[A75...]: Obliga al binder a tocar estos residuos de PD-1.
-# * ckpt_override_path: Usa el modelo especializado en sitios activos (Active_site).
-
-echo "✅ LISTO: Revisa los resultados en $OUTPUT_DIR"
+# --- 5. REGISTRO ---
+echo "RFdiffusion | $BATCH_ID | 40 Diseños | $(date)" >> "$LOG_FILE"
+echo "✅ Batch completado."

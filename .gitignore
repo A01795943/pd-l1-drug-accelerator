@@ -190,8 +190,23 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-#carpeta script
-script/env_config.sh
+# --- IGNORAR DATOS PESADOS (Local Only) ---
+data/raw/*
+data/processed_pdbs/*
+data/MASTER_DB_METADATA.csv
 
+# Ignorar salidas de generación masiva
+outputs/01_rfdiffusion/*
+outputs/02_proteinmpnn/*
+outputs/03_alphafold_inputs/*
+outputs/execution_log.txt
 
+# --- EXCEPCIONES (Permitir documentación) ---
+!outputs/README.md
+!data/README.md
 
+# --- CONFIGURACIÓN Y SISTEMA ---
+scripts/env_config.sh
+__pycache__/
+.ipynb_checkpoints/
+*.DS_Store

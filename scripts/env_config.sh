@@ -1,12 +1,19 @@
-# scripts/env_config.sh
-# ESTE ARCHIVO ES PERSONAL DE CADA USUARIO.
-# Define aquí dónde instalaste TUS herramientas en TU computadora.
+#!/bin/bash
+# =============================================================================
+# ARCHIVO DE CONFIGURACIÓN PERSONAL (NO SUBIR A GITHUB)
+# =============================================================================
+# INSTRUCCIONES:
+# Define aquí las rutas donde TÚ instalaste las herramientas.
+# Cada miembro del equipo tendrá rutas diferentes, este archivo unifica todo.
+# =============================================================================
 
-# Ruta a la carpeta de RFdiffusion (donde clonaste el repo de Baker Lab)
+# 1. Ruta donde clonaste RFdiffusion (Repositorio de Baker Lab)
+# Ejemplo: /home/subde/herramientas/RFdiffusion
 export RFDIFFUSION_DIR="/home/subde/herramientas/RFdiffusion"
 
-# Ruta a la carpeta de ProteinMPNN
+# 2. Ruta donde clonaste ProteinMPNN
+# Ejemplo: /home/subde/herramientas/ProteinMPNN
 export MPNN_DIR="/home/subde/herramientas/ProteinMPNN"
 
-# Nombre del entorno de Conda a usar (normalmente SE3nv)
+# 3. Nombre de tu entorno Conda (Donde instalaste pytorch/cuda)
 export CONDA_ENV_NAME="SE3nv"
