@@ -3,6 +3,7 @@ import subprocess
 import torch
 import csv
 import sys
+import glob
 from datetime import datetime
 
 # =============================================================================
@@ -21,9 +22,19 @@ POSIBLES_RUTAS_MPNN = [
     os.path.join(PROJECT_ROOT, "herramientas", "ProteinMPNN")
 ]
 
+# 3. Función inteligente para encontrar el diseño de NVIDIA más reciente
+def get_latest_pdb(folder):
+    """Busca el archivo .pdb más nuevo en la carpeta de resultados de NVIDIA."""
+    files = glob.glob(os.path.join(folder, "*.pdb"))
+    if not files:
+        return None
+    # Ordena por fecha de modificación (el más nuevo al final)
+    return max(files, key=os.path.getmtime)
+
+
 MPNN_DIR = next((ruta for ruta in POSIBLES_RUTAS_MPNN if os.path.exists(ruta)), None)
 
-# 3. Construcción de Rutas del Proyecto (Dinámicas)
+# 4. Construcción de Rutas del Proyecto (Dinámicas)
 INPUT_PDB = os.path.join(PROJECT_ROOT, "outputs", "01_rfdiffusion_results", "design_nvidia_final.pdb")
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 HISTORY_FILE = os.path.join(DATA_DIR, "processed_history.csv")

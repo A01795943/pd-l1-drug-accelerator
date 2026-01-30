@@ -4,6 +4,7 @@ import json
 import urllib.request
 import time
 from dotenv import load_dotenv
+from datetime import datetime
 
 # ==============================================================================
 # 🔑 CONFIGURACIÓN: Configuracion de la API aqui tienes que crear en la raiz el archivo de lectura de tu API
@@ -13,13 +14,22 @@ load_dotenv(api.env)
 API_KEY = os.getenv(NVIDIA_API_KEY) 
 # ==============================================================================
 
-# Rutas
+# --- RUTAS DINÁMICAS ---
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.dirname(CURRENT_DIR) 
-INPUT_PDB = os.path.join(PROJECT_ROOT, "data", "processed_pdbs", "Target_Fixed_A1.pdb")
-OUTPUT_DIR = os.path.join(PROJECT_ROOT, "outputs", "nvidia_results")
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-os.makedirs(os.path.dirname(INPUT_PDB), exist_ok=True)
+PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
+
+# Creamos un ID único basado en el momento exacto de la ejecución
+SESSION_ID = datetime.now().strftime('%Y%m%d_%H%M%S')
+
+# Definimos la carpeta de resultados (la que renombramos anteriormente)
+OUTPUT_BASE = os.path.join(PROJECT_ROOT, "outputs", "01_rfdiffusion_results")
+
+# El archivo ahora tendrá la fecha en el nombre para no borrarse nunca
+OUTPUT_FILE = f"design_nvidia_{SESSION_ID}.pdb"
+OUTPUT_DIR = os.path.join(OUTPUT_BASE, OUTPUT_FILE)
+
+# Aseguramos que la carpeta base exista
+os.makedirs(OUTPUT_BASE, exist_ok=True)
 
 # URL CORRECTA (IPD)
 INVOKE_URL = "https://health.api.nvidia.com/v1/biology/ipd/rfdiffusion/generate"
