@@ -18,7 +18,7 @@ from datetime import datetime
 # --- CONFIGURACIÓN ---
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RFDIFFUSION_DIR = os.path.expanduser("~/herramientas/RFdiffusion") 
-OUTPUT_BASE = os.path.join(PROJECT_ROOT, "outputs", "01_rfdiffusion")
+OUTPUT_BASE = os.path.join(PROJECT_ROOT, "outputs", "01_rfdiffusion_results")
 BATCH_ID = f"batch_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 OUTPUT_DIR = os.path.join(OUTPUT_BASE, BATCH_ID)
 

@@ -6,7 +6,7 @@ import time
 from dotenv import load_dotenv
 
 # ==============================================================================
-# 🔑 CONFIGURACIÓN: PEGA TU NVIDIA API KEY AQUÍ
+# 🔑 CONFIGURACIÓN: Configuracion de la API aqui tienes que crear en la raiz el archivo de lectura de tu API
 # ==============================================================================
 
 load_dotenv(api.env)
