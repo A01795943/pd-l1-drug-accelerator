@@ -190,70 +190,45 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# =============================================================================
-# 1. ARCHIVOS DE SISTEMA Y PYTHON (Basura técnica)
-# =============================================================================
-__pycache__/
-*.py[cod]
-*$py.class
-.DS_Store
-.vscode/
-.idea/
-*.log
-
-# =============================================================================
-# 2. ENTORNOS VIRTUALES (Nunca se suben)
-# =============================================================================
-env/
-venv/
-SE3nv/
-miniconda3/
-
-# =============================================================================
-# 3. SECRETOS Y CONFIGURACIÓN (Seguridad)
-# =============================================================================
-.env
+# ===========================
+# 🔐 SEGURIDAD (CRÍTICO)
+# ===========================
 api.env
-*.env
+.env
+*.key
+keys/
 
-# =============================================================================
-# 4. HERRAMIENTAS EXTERNAS (Ya están en su propio repo)
-# =============================================================================
-# Ignoramos la carpeta herramientas porque la manejas por separado
-herramientas/
-tools/
+# ===========================
+# 🐍 PYTHON & SISTEMA
+# ===========================
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
 
-# =============================================================================
-# 5. MODELOS Y PESOS (Archivos gigantes .pt)
-# =============================================================================
-*.pt
-*.pth
-*.ckpt
+# ===========================
+# 📂 SALIDAS GENERADAS (Local Only)
+# ===========================
+# Ignorar los 40 esqueletos PDB (pesan mucho y se pueden regenerar)
+outputs/01_diffusion/*
+!outputs/01_diffusion/.gitkeep
 
-# =============================================================================
-# 6. GESTIÓN DE OUTPUTS (El Pipeline)
-# =============================================================================
-# Por defecto ignoramos todos los resultados masivos
-outputs/*
+# Ignorar los archivos intermedios de ProteinMPNN
+outputs/02_proteinmpnn/*
+!outputs/02_proteinmpnn/.gitkeep
+temp_mpnn_work/
+temp_mpnn_single/
+temp_mpnn_processing/
 
-# --- EXCEPCIONES (Lo que SÍ queremos en Git) ---
-# Queremos mantener la estructura de carpetas pero no los archivos pesados
-!outputs/01_rfdiffusion_results/
-!outputs/02_proteinmpnn/
-!outputs/03_alphafold_inputs/
-!outputs/README.md
+# Ignorar las carpetas de FASTAs individuales (Lo que pediste)
+outputs/03_alphafold_inputs/fastas_*/
 
-# Específicamente, NO ignores tu diseño base de NVIDIA porque es tu referencia
-!outputs/01_rfdiffusion_results/design_nvidia_final.pdb
+# Ignorar los resultados pesados de AlphaFold (ZIPs)
+outputs/04_alphafold_results/*
+!outputs/04_alphafold_results/.gitkeep
 
-# =============================================================================
-# 7. DATOS Y BASES DE DATOS
-# =============================================================================
-data/processed_pdbs/*.temp
-data/processed_pdbs/*_raw.pdb
-
-# --- EXCEPCIONES ---
-# El historial es PEQUEÑO y VALIOSO, sí debe ir en Git para seguimiento
-!data/processed_history.csv
-!data/MASTER_DB_METADATA.csv
-!data/processed_pdbs/Target_Fixed_A1.pdb
+# ===========================
+# ✅ EXCEPCIONES (Lo que SÍ queremos subir)
+# ===========================
+# Queremos subir los JSON finales porque son el registro del lote enviado
+!outputs/03_alphafold_inputs/*.json
