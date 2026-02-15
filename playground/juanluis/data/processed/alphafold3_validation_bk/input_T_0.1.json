@@ -1,0 +1,17 @@
+{
+  "name": "T_0.1",
+  "modelSeeds": [
+    1
+  ],
+  "sequences": [
+    {
+      "protein": {
+        "id": "A",
+        "sequence": "AFKVTAPKTEYVVELGSDVSLSCNFPVEGKLDLSKLTVVWTKHGELIINYVKGKFDESLVHPKFKGRAYLDLDSLKKGVATLVIKNVKLEDAGVYTCTITYGGTDSVDIKLYVAEPENGKTKLVLKELNPETGEIVVAVEKEIEELP",
+        "templates": []
+      }
+    }
+  ],
+  "dialect": "alphafold3",
+  "version": 4
+}
