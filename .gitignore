@@ -189,3 +189,18 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# --- SEGURIDAD (Lo más importante) ---
+# Ignora cualquier archivo de variables de entorno (tienen tus contraseñas)
+*.env
+.env
+global.env
+
+# --- DATOS Y BASES DE DATOS ---
+# Ignora la carpeta donde se guardan las configuraciones pesadas de los programas
+appdata/
+config/
+db/
+
+outputs/
+!outputs/04_alphafold_results
