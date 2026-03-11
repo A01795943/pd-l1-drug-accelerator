@@ -1,0 +1,16 @@
+torch
+pandas
+numpy
+scikit-learn
+biopython
+matplotlib
+transformers 
+torchvision
+torchaudio
+fair-esm
+seaborn 
+tqdm
+notebook
+ipykernel
+xgboost
+lightgbm
