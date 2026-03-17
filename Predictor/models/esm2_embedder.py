@@ -1,50 +1,45 @@
 import torch
 import esm
+from tqdm import tqdm
 
 class ESM2Embedder:
-    def __init__(self, model_name="esm2_t12_35M_UR50D", device=None, batch_size=1):
-        self.device = device or (torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
+    def __init__(self, model_name="esm2_t12_35M_UR50D", device=None, batch_size=16):
+        self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.batch_size = batch_size
-
-        # Cargar modelo más pequeño
+        
+        print(f"Loading {model_name} on {self.device}...")
         self.model, self.alphabet = esm.pretrained.load_model_and_alphabet(model_name)
-        self.model = self.model.to(self.device)
-        self.model.eval()  # Modo evaluación
-
+        self.model.to(self.device)
+        self.model.eval()
         self.batch_converter = self.alphabet.get_batch_converter()
 
-    def embed(self, sequences, pooling='mean'):
-        """
-        Genera embeddings para una lista de secuencias.
-        Se reemplaza '/' por 'X' temporalmente para multichain sequences.
-        """
+    def embed(self, sequences):
+        # Limpieza de secuencias: ESM2 no reconoce el carácter '/' de complejos
+        # Se recomienda reemplazarlo por un espacio o eliminarlo según el paper de ESM
+        clean_seqs = [s.replace("/", "") for s in sequences]
+        
         all_embeddings = []
-
-        for i in range(0, len(sequences), self.batch_size):
-             
-            print(f"Embedding batch {i} / {len(sequences)}")
-             
-            batch_seqs = sequences[i:i+self.batch_size]
-
-            # Reemplazar '/' por 'X' temporalmente
-            batch_seqs_clean = [seq.replace("/", "X") for seq in batch_seqs]
-
-            data = [(str(idx), seq) for idx, seq in enumerate(batch_seqs_clean)]
-            labels, strs, tokens = self.batch_converter(data)
-            tokens = tokens.to(self.device)
+        
+        for i in tqdm(range(0, len(clean_seqs), self.batch_size), desc="Extracting ESM embeddings"):
+            batch_seqs = clean_seqs[i : i + self.batch_size]
+            
+            # Formato requerido por ESM: [(id, seq), ...]
+            data = [(f"seq_{j}", seq) for j, seq in enumerate(batch_seqs)]
+            batch_labels, batch_strs, batch_tokens = self.batch_converter(data)
+            batch_tokens = batch_tokens.to(self.device)
 
             with torch.no_grad():
-                results = self.model(tokens, repr_layers=[self.model.num_layers])
-                batch_embeddings = results["representations"][self.model.num_layers]  # [B, L, D]
+                results = self.model(batch_tokens, repr_layers=[self.model.num_layers], return_contacts=False)
+            
+            token_representations = results["representations"][self.model.num_layers]
 
-                # Pooling para obtener embedding fijo por secuencia
-                if pooling == 'mean':
-                    pooled = batch_embeddings.mean(dim=1)  # [B, D]
-                elif pooling == 'max':
-                    pooled, _ = batch_embeddings.max(dim=1)
-                else:
-                    raise ValueError("Pooling debe ser 'mean' o 'max'")
+            # Generar Mean Pooling (promedio de la secuencia omitiendo padding y tokens especiales)
+            for j, seq in enumerate(batch_strs):
+                mean_embedding = token_representations[j, 1 : len(seq) + 1].mean(0)
+                all_embeddings.append(mean_embedding.cpu())
 
-                all_embeddings.append(pooled.cpu())
+        return torch.stack(all_embeddings)
 
-        return torch.cat(all_embeddings, dim=0)
+if __name__ == "__main__":
+    # Test rápido si se ejecuta directamente
+    print("Clase ESM2Embedder lista.")

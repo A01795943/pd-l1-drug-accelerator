@@ -1,77 +1,43 @@
-# evaluation/06_consistency_check.py
-
 import pandas as pd
 import os
 
-# -----------------------------
-# Archivos
-# -----------------------------
+def check_consistency():
+    files = {
+        "Processed": "data/processed_dataset.csv",
+        "Predictions": "outputs/predictions_all_models.csv",
+        "Candidates": "outputs/alphafold_candidates.csv"
+    }
 
-processed_file = "data/processed_dataset.csv"
-pred_file = "outputs/predictions_all_models.csv"
-candidates_file = "outputs/alphafold_candidates.csv"
+    print("\n--- Running Consistency Check ---")
+    
+    dataframes = {}
+    for name, path in files.items():
+        if os.path.exists(path):
+            dataframes[name] = pd.read_csv(path)
+            print(f"✅ {name}: {len(dataframes[name])} filas.")
+        else:
+            print(f"❌ {name}: No encontrado en {path}")
+            return
 
-# -----------------------------
-# Verificar existencia
-# -----------------------------
-
-for f in [processed_file, pred_file, candidates_file]:
-    if not os.path.exists(f):
-        raise FileNotFoundError(f"No se encontró {f}")
-
-# -----------------------------
-# Cargar archivos
-# -----------------------------
-
-df_processed = pd.read_csv(processed_file)
-df_preds = pd.read_csv(pred_file)
-df_candidates = pd.read_csv(candidates_file)
-
-# -----------------------------
-# Revisar número de filas
-# -----------------------------
-
-print("\nFilas processed_dataset:", len(df_processed))
-print("Filas predictions_all_models:", len(df_preds))
-print("Filas alphafold_candidates:", len(df_candidates))
-
-# -----------------------------
-# Validar secuencias
-# -----------------------------
-
-if 'seq' in df_candidates.columns and 'seq' in df_preds.columns:
-
-    missing = set(df_candidates['seq']) - set(df_preds['seq'])
-
-    if missing:
-        print("⚠️ Secuencias candidatas no encontradas en predictions:")
-        print(missing)
+    # Validar que las secuencias de los candidatos existan en el dataset original
+    preds_seqs = set(dataframes["Predictions"]['seq'])
+    cand_seqs = set(dataframes["Candidates"]['seq'])
+    
+    missing = cand_seqs - preds_seqs
+    if not missing:
+        print("✅ Integridad de secuencias: OK (Todas existen en el dataset original)")
     else:
-        print("✅ Todas las secuencias candidatas están en predictions")
+        print(f"⚠️ Alerta: {len(missing)} secuencias en candidatos no están en predicciones.")
 
-else:
-    print("⚠️ Falta columna 'seq'")
+    # Validar Thresholds
+    cands = dataframes["Candidates"]
+    failed_ptm = cands[cands["PTM_pred"] < 0.7]
+    failed_iptm = cands[cands["IPTM_pred"] < 0.7]
 
-# -----------------------------
-# Validar thresholds
-# -----------------------------
-
-ptm_threshold = 0.7
-iptm_threshold = 0.7
-
-if 'PTM_pred' in df_candidates.columns and 'IPTM_pred' in df_candidates.columns:
-
-    invalid = df_candidates[
-        (df_candidates["PTM_pred"] < ptm_threshold) |
-        (df_candidates["IPTM_pred"] < iptm_threshold)
-    ]
-
-    if len(invalid) > 0:
-        print("⚠️ Hay candidatos que NO cumplen thresholds")
+    if len(failed_ptm) == 0 and len(failed_iptm) == 0:
+        print("✅ Validación de Thresholds: OK (Todos cumplen > 0.7)")
     else:
-        print("✅ Todos los candidatos cumplen thresholds")
+        print(f"⚠️ Alerta: Hay {len(failed_ptm) + len(failed_iptm)} registros bajo el umbral.")
 
-else:
-    print("⚠️ Falta PTM_pred o IPTM_pred en candidatos")
-
-print("\nConsistency check terminado")
+if __name__ == "__main__":
+    check_consistency()
