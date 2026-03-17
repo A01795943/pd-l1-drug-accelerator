@@ -1,37 +1,61 @@
-# Drug Design for Diabetes (Team 29)
+# pd-l1-drug-accelerator
 
-This repository contains the work of Team 29 for the Master's course project on Master degree on Applied Artificial Intelligence .  
-We aim to design therapeutic candidates for **diabetes**, combining generative protein design methods with machine learning predictors to evaluate their properties.
+<a target="_blank" href="https://cookiecutter-data-science.drivendata.org/">
+    <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
+</a>
 
----
+A drug accelerator with ML
 
-Our workflow follows an iterative pipeline:
-1. **Backbone generation**  
-   - Using [RFdiffusion](https://github.com/RosettaCommons/RFdiffusion) to generate protein backbones.
+## Project Organization
 
-2. **Sequence design**  
-   - Applying [ProteinMPNN](https://github.com/dauparas/ProteinMPNN) to generate amino acid sequences compatible with the backbone.
+```
+├── LICENSE            <- Open-source license if one is chosen
+├── Makefile           <- Makefile with convenience commands like `make data` or `make train`
+├── README.md          <- The top-level README for developers using this project.
+├── data
+│   ├── external       <- Data from third party sources.
+│   ├── interim        <- Intermediate data that has been transformed.
+│   ├── processed      <- The final, canonical data sets for modeling.
+│   └── raw            <- The original, immutable data dump.
+│
+├── docs               <- A default mkdocs project; see www.mkdocs.org for details
+│
+├── models             <- Trained and serialized models, model predictions, or model summaries
+│
+├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
+│                         the creator's initials, and a short `-` delimited description, e.g.
+│                         `1.0-jqp-initial-data-exploration`.
+│
+├── pyproject.toml     <- Project configuration file with package metadata for 
+│                         pd-l1-drug-accelerator and configuration for tools like black
+│
+├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+│
+├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
+│   └── figures        <- Generated graphics and figures to be used in reporting
+│
+├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
+│                         generated with `pip freeze > requirements.txt`
+│
+├── setup.cfg          <- Configuration file for flake8
+│
+└── pd-l1-drug-accelerator   <- Source code for use in this project.
+    │
+    ├── __init__.py             <- Makes pd-l1-drug-accelerator a Python module
+    │
+    ├── config.py               <- Store useful variables and configuration
+    │
+    ├── dataset.py              <- Scripts to download or generate data
+    │
+    ├── features.py             <- Code to create features for modeling
+    │
+    ├── modeling                
+    │   ├── __init__.py 
+    │   ├── predict.py          <- Code to run model inference with trained models          
+    │   └── train.py            <- Code to train models
+    │
+    └── plots.py                <- Code to create visualizations
+```
 
-3. **Predictive evaluation**  
-   - Machine learning models are used to assess the designed proteins in terms of:
-     - Binding affinity
-     - Stability
-     - Solubility
-     - Toxicity  
-
-   We apply Support Vector Machines, Random Forest, and XGBoost predictors.  
-
-4. **Iteration**  
-   - Promising candidates are kept for further analysis.  
-   - Failed candidates (low score in predictors) are discarded, and the generation cycle is repeated.
-
-
-## 📂 Repository Structure
-
-```text
-drug-design-diabetes-team29/
-├── notebooks/
-│   └── Avance1_Equipo29.ipynb
-├── README.md           # Project documentation
-├── src/                # Scripts and utilities
+--------
 
