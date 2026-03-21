@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 class TransformerEncoder(nn.Module):
-    def __init__(self, embed_dim=480):
+    def __init__(self, embed_dim=1280):
         super().__init__()
         
         # d_model debe ser divisible por nhead (480 / 8 = 60, es correcto)
@@ -15,7 +15,7 @@ class TransformerEncoder(nn.Module):
 
         self.encoder = nn.TransformerEncoder(
             encoder_layer,
-            num_layers=2
+            num_layers=3
         )
 
     def forward(self, x):

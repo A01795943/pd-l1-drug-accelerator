@@ -13,7 +13,7 @@ class LightGBMModel:
             subsample=0.9,
             colsample_bytree=0.8,
             random_state=42,
-            verbosity=-1  # Menos ruido en consola
+            verbosity=-1  # Menos ruido en consolaa
         )
         self.model = MultiOutputRegressor(base)
 

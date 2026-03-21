@@ -5,6 +5,17 @@ class MLPPredictor(nn.Module):
         super().__init__()
         # Arquitectura feed-forward para regresión multisalida (2 targets: PTM e IPTM)
         self.model = nn.Sequential(
+            nn.Linear(input_dim, 512),
+            nn.BatchNorm1d(512), # Estabiliza los gradientes de ESM-2
+            nn.ReLU(),
+            nn.Dropout(0.2),      # Aumentado para evitar memorización de secuencias
+            
+            # Bloque 2: Compresión de información
+            nn.Linear(512, 256),
+            nn.BatchNorm1d(256),
+            nn.ReLU(),
+            nn.Dropout(0.1),
+            
             nn.Linear(input_dim, 256),
             nn.ReLU(),
             nn.Dropout(0.1), # Añadido para evitar sobreajuste

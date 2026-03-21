@@ -4,7 +4,7 @@ import time
 import os
 
 class RidgeModel:
-    def __init__(self, alpha=1.0):
+    def __init__(self, alpha=10.0):
         self.model = Ridge(alpha=alpha)
 
     def fit(self, X, y):

@@ -4,7 +4,7 @@ import time
 import os
 
 class MLPModel:
-    def __init__(self, hidden_layer_sizes=(128, 64), max_iter=500, random_state=42):
+    def __init__(self, hidden_layer_sizes=(512, 256, 128), max_iter=500, random_state=42):
         self.model = MLPRegressor(
             hidden_layer_sizes=hidden_layer_sizes,
             max_iter=max_iter,

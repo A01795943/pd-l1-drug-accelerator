@@ -3,7 +3,9 @@ import esm
 from tqdm import tqdm
 
 class ESM2Embedder:
-    def __init__(self, model_name="esm2_t12_35M_UR50D", device=None, batch_size=16):
+    #def __init__(self, model_name="esm2_t12_35M_UR50D", device=None, batch_size=16):
+    def __init__(self, model_name="esm2_t33_650M_UR50D", device=None, batch_size=16):
+
         self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.batch_size = batch_size
         

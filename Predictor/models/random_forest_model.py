@@ -13,6 +13,9 @@ class RandomForestModel:
             max_depth=max_depth,
             random_state=random_state,
             n_jobs=n_jobs,
+            #max_features='sqrt',         # Muy importante para alta dimensionalidad (1280)
+            min_samples_leaf=2,          # Suaviza la predicción ante ruido estructural
+            bootstrap=True,
             verbose=1   # muestra progreso de los árboles
         )
 
